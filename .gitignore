@@ -1,0 +1,16 @@
+# Archivos de configuración
+.env
+vendor/
+node_modules/
+
+# Cache y logs
+*.log
+.cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
