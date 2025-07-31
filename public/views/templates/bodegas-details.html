@@ -1,55 +1,104 @@
 <!-- Template: Detalles de Bodega -->
-<div class="modal-header">
+<div class="modal-header bg-primary text-white">
     <h5 class="modal-title">
-        <i class="bi bi-warehouse"></i> Detalles de Bodega
+        <i class="bi bi-warehouse me-2"></i> Detalles de Bodega
     </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
 </div>
 <div class="modal-body">
-    <div class="row">
-        <div class="col-md-6">
-            <h6>Información General</h6>
-            <table class="table table-sm">
-                <tr>
-                    <td><strong>Código:</strong></td>
-                    <td id="detail-codigo">-</td>
-                </tr>
-                <tr>
-                    <td><strong>Nombre:</strong></td>
-                    <td id="detail-nombre">-</td>
-                </tr>
-                <tr>
-                    <td><strong>Ubicación:</strong></td>
-                    <td id="detail-ubicacion">-</td>
-                </tr>
-                <tr>
-                    <td><strong>Estado:</strong></td>
-                    <td id="detail-estado">-</td>
-                </tr>
-            </table>
+    <!-- Header con información principal -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-1" id="detail-nombre">-</h5>
+                            <p class="text-muted mb-0 small">
+                                <i class="bi bi-geo-alt me-1"></i>
+                                <span id="detail-ubicacion">-</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                            <div class="mb-1">
+                                <span class="text-muted small">Código:</span><br>
+                                <code class="fs-6" id="detail-codigo">-</code>
+                            </div>
+                            <div id="detail-estado">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <h6>Especificaciones</h6>
-            <table class="table table-sm">
-                <tr>
-                    <td><strong>Dotación:</strong></td>
-                    <td id="detail-dotacion">-</td>
-                </tr>
-                <tr>
-                    <td><strong>Creada:</strong></td>
-                    <td id="detail-created">-</td>
-                </tr>
-                <tr>
-                    <td><strong>Actualizada:</strong></td>
-                    <td id="detail-updated">-</td>
-                </tr>
-            </table>
+    </div>
+
+    <!-- Información detallada -->
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header bg-transparent py-2">
+                    <h6 class="mb-0 small">
+                        <i class="bi bi-info-circle me-2"></i>Información General
+                    </h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Dotación:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <strong class="text-primary small">
+                                <i class="bi bi-people me-1"></i>
+                                <span id="detail-dotacion">-</span>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Creación:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small id="detail-created">-</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Actualización:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small id="detail-updated">-</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-transparent py-2">
+                    <h6 class="mb-0 small">
+                        <i class="bi bi-people me-2"></i>Encargados Asignados
+                    </h6>
+                </div>
+                <div class="card-body py-2" style="max-height: 250px; overflow-y: auto;">
+                    <div id="detail-encargados-container">
+                        <div id="detail-encargados-list">
+                            <!-- Los encargados se cargarán aquí dinámicamente -->
+                        </div>
+                        <div id="detail-encargados-empty" class="text-center text-muted py-2" style="display: none;">
+                            <i class="bi bi-person-x fs-4 opacity-50"></i>
+                            <p class="mb-0 small">Sin encargados asignados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+<div class="modal-footer bg-light">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle me-1"></i> Cerrar
+    </button>
     <button type="button" class="btn btn-primary" id="edit-detail-btn">
-        <i class="bi bi-pencil"></i> Editar
+        <i class="bi bi-pencil me-1"></i> Editar Bodega
     </button>
 </div>

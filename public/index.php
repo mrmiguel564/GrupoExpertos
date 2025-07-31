@@ -98,6 +98,13 @@ session_start();
         </div>
     </main>
 
+    <style>
+        main {
+            height: calc(100vh - 225px);
+            overflow-y: auto;
+        }
+    </style>
+
     <!-- Footer -->
     <footer class="bg-light mt-5 py-4">
         <div class="container text-center">

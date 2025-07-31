@@ -417,3 +417,141 @@ footer {
         font-size: 0.7em;
     }
 }
+
+/* === ESTILOS PARA DETALLES DE BODEGA === */
+
+/* Avatar circular para encargados */
+.avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Elementos de detalle de encargados */
+.encargado-detail-item {
+    transition: var(--transition);
+}
+
+.encargado-detail-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.encargado-detail-item .border {
+    border-color: #e9ecef !important;
+    transition: var(--transition);
+}
+
+.encargado-detail-item:hover .border {
+    border-color: var(--primary-color) !important;
+}
+
+/* Header mejorado del modal */
+.modal-header.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%) !important;
+}
+
+/* Cards de información */
+.card {
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.card-header.bg-transparent {
+    background-color: #f8f9fa !important;
+}
+
+/* Badges mejorados */
+.badge.fs-6 {
+    padding: 0.375em 0.5em;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+/* Formato de código mejorado */
+code.fs-6 {
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    border: 1px solid #dee2e6;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Animaciones suaves */
+.encargado-detail-item,
+.card,
+.badge {
+    transition: all 0.2s ease;
+}
+
+/* Estados hover mejorados */
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive para detalles */
+@media (max-width: 768px) {
+    .avatar-circle {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    
+    .encargado-detail-item {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 0.75rem !important;
+    }
+    
+    .badge {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Ajustar tamaño de modal en móvil */
+    .modal-dialog {
+        max-width: 95%;
+    }
+    
+    /* Reducir padding en móvil */
+    .modal-body {
+        padding: 1rem 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    .card-header h6 {
+        font-size: 0.9rem;
+    }
+    
+    .avatar-circle {
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+    }
+    
+    .encargado-detail-item .d-flex {
+        padding: 0.5rem !important;
+    }
+}

@@ -62,7 +62,7 @@ window.BodegasModule = {
                     <td><code>${bodega.codigo || 'N/A'}</code></td>
                     <td><strong>${bodega.nombre}</strong></td>
                     <td>${bodega.ubicacion}</td>
-                    <td>${parseFloat(bodega.dotacion).toLocaleString()}</td>
+                    <td>${parseInt(bodega.dotacion || 0)}</td>
                     <td>
                         ${encargadosHtml}
                     </td>
@@ -285,10 +285,9 @@ window.BodegasModule = {
         App.showLoading();
         
         $.ajax({
-            url: '/api/rutas.php',
+            url: '/api/bodegas.php',
             method: 'GET',
             data: {
-                module: 'bodegas',
                 action: 'show',
                 id: id
             },
@@ -373,24 +372,56 @@ window.BodegasModule = {
         App.renderModal($detailsClone.html());
         
         // Llenar datos en el template
-        $('#detail-codigo').text(bodega.codigo);
-        $('#detail-nombre').text(bodega.nombre);
-        $('#detail-ubicacion').text(bodega.ubicacion);
-        $('#detail-dotacion').text(parseFloat(bodega.dotacion).toLocaleString());
+        $('#detail-codigo').text(bodega.codigo || 'N/A');
+        $('#detail-nombre').text(bodega.nombre || 'Sin nombre');
+        $('#detail-ubicacion').text(bodega.ubicacion || 'Sin ubicación');
+        $('#detail-dotacion').text(`${parseInt(bodega.dotacion || 0)}`);
         
         // Estado
         const estadoBadge = bodega.activa === true || bodega.activa === 'true'
-            ? '<span class="badge bg-success">Activa</span>' 
-            : '<span class="badge bg-danger">Inactiva</span>';
+            ? '<span class="badge bg-success fs-6"><i class="bi bi-check-circle me-1"></i>Activa</span>' 
+            : '<span class="badge bg-danger fs-6"><i class="bi bi-x-circle me-1"></i>Inactiva</span>';
         $('#detail-estado').html(estadoBadge);
         
-        // Fechas
+        // Fechas con formato mejorado
         if (bodega.created_at) {
-            $('#detail-created').text(new Date(bodega.created_at).toLocaleDateString('es-ES'));
+            const fechaCreacion = new Date(bodega.created_at);
+            $('#detail-created').html(`
+                <i class="bi bi-calendar-plus me-1"></i>
+                ${fechaCreacion.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}
+                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaCreacion.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
+            `);
+        } else {
+            $('#detail-created').html('<span class="text-muted">No disponible</span>');
         }
+        
         if (bodega.updated_at) {
-            $('#detail-updated').text(new Date(bodega.updated_at).toLocaleDateString('es-ES'));
+            const fechaActualizacion = new Date(bodega.updated_at);
+            $('#detail-updated').html(`
+                <i class="bi bi-calendar-check me-1"></i>
+                ${fechaActualizacion.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}
+                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaActualizacion.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
+            `);
+        } else {
+            $('#detail-updated').html('<span class="text-muted">No disponible</span>');
         }
+        
+        // Renderizar encargados
+        this.renderEncargadosDetails(bodega.encargados || []);
         
         // Evento para botón editar
         const self = this;
@@ -403,6 +434,74 @@ window.BodegasModule = {
         });
     },
 
+    // Renderizar lista de encargados en los detalles
+    renderEncargadosDetails: function(encargados) {
+        const $container = $('#detail-encargados-list');
+        const $emptyState = $('#detail-encargados-empty');
+        
+        // Limpiar contenedor
+        $container.empty();
+        
+        if (!encargados || encargados.length === 0) {
+            // Mostrar estado vacío
+            $container.hide();
+            $emptyState.show();
+            return;
+        }
+        
+        // Ocultar estado vacío y mostrar lista
+        $emptyState.hide();
+        $container.show();
+        
+        // Generar cards para cada encargado
+        encargados.forEach(encargado => {
+            const $encargadoCard = $(`
+                <div class="encargado-detail-item mb-2">
+                    <div class="d-flex align-items-center p-2 border rounded bg-white">
+                        <div class="flex-shrink-0 me-2">
+                            <div class="avatar-circle bg-primary text-white">
+                                <i class="bi bi-person"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark mb-1">
+                                ${encargado.nombre || 'Sin nombre'} ${encargado.apellido || ''}
+                            </div>
+                            <div class="small text-muted">
+                                <i class="bi bi-envelope me-1"></i>
+                                ${encargado.email || 'Sin email'}
+                            </div>
+                            ${encargado.telefono ? `
+                                <div class="small text-muted">
+                                    <i class="bi bi-telephone me-1"></i>
+                                    ${encargado.telefono}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="flex-shrink-0 d-none d-md-block">
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-person-check me-1"></i>
+                                Asignado
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `);
+            $container.append($encargadoCard);
+        });
+        
+        // Agregar contador de encargados
+        const $contador = $(`
+            <div class="mt-2 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-people me-1"></i>
+                    Total: ${encargados.length} encargado${encargados.length !== 1 ? 's' : ''} asignado${encargados.length !== 1 ? 's' : ''}
+                </small>
+            </div>
+        `);
+        $container.append($contador);
+    },
+
     // Eliminar bodega
     deleteItem: function(id, nombre) {
         if (!confirm(`¿Está seguro de que desea eliminar la bodega "${nombre}"?`)) {
@@ -412,10 +511,9 @@ window.BodegasModule = {
         App.showLoading();
         
         $.ajax({
-            url: '/api/rutas.php',
+            url: '/api/bodegas.php',
             method: 'POST',
             data: {
-                module: 'bodegas',
                 action: 'delete',
                 id: id,
                 _method: 'DELETE'
@@ -437,10 +535,9 @@ window.BodegasModule = {
     // Cargar lista de encargados disponibles
     loadEncargados: function() {
         $.ajax({
-            url: '/api/rutas.php',
+            url: '/api/encargados.php',
             method: 'GET',
             data: { 
-                module: 'encargados',
                 action: 'all' 
             },
             success: function(response) {
@@ -470,7 +567,7 @@ window.BodegasModule = {
                     <label for="enc_${encargado.id}" class="form-check-label">
                         <div class="encargado-info">
                             <span class="encargado-name">${encargado.nombre} ${encargado.apellido}</span>
-                            <span class="encargado-details">${encargado.cargo} • ${encargado.email}</span>
+                            <span class="encargado-details">${encargado.email}</span>
                         </div>
                     </label>
                 </div>
