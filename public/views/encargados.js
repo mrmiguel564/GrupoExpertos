@@ -33,7 +33,6 @@ window.EncargadosModule = {
                         <strong>${encargado.nombre} ${encargado.apellido}</strong><br>
                         <small class="text-muted">${encargado.email}</small>
                     </td>
-                    <td>${encargado.cargo}</td>
                     <td>${encargado.telefono || 'No especificado'}</td>
                     <td>${new Date(encargado.fecha_ingreso).toLocaleDateString()}</td>
                     <td>
@@ -71,8 +70,7 @@ window.EncargadosModule = {
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Encargado</th>
-                                    <th>Cargo</th>
+                                    <th>Encargado</th> 
                                     <th>Teléfono</th>
                                     <th>Fecha Ingreso</th>
                                     <th>Estado</th>
@@ -146,29 +144,11 @@ window.EncargadosModule = {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="cargo" class="form-label">Cargo *</label>
-                                <input type="text" class="form-control" id="cargo" name="cargo" required 
-                                       placeholder="Ej: Supervisor de Bodega">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
                                 <label for="fecha_ingreso" class="form-label">Fecha de Ingreso *</label>
                                 <input type="date" class="form-control" id="fecha_ingreso" name="fecha_ingreso" required>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label for="estado" class="form-label">Estado *</label>
-                        <select class="form-select" id="estado" name="estado" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="activo">Activo</option>
-                            <option value="inactivo">Inactivo</option>
-                        </select>
-                    </div>
-                    
- 
                 </form>
             </div>
             <div class="modal-footer">
@@ -209,7 +189,6 @@ window.EncargadosModule = {
                     $('#apellido').val(encargado.apellido);
                     $('#email').val(encargado.email);
                     $('#telefono').val(encargado.telefono || '');
-                    $('#cargo').val(encargado.cargo);
                     $('#fecha_ingreso').val(encargado.created_at);
                     $('#estado').val(encargado.estado);
  
