@@ -418,6 +418,110 @@ footer {
     }
 }
 
+/* === ESTILOS PARA BÚSQUEDA Y FILTROS === */
+
+/* Contenedor de filtros */
+.search-filters-container {
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e9ecef;
+}
+
+/* Input de búsqueda mejorado */
+.input-group .input-group-text {
+    background-color: white;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+.input-group .form-control:focus {
+    border-left: none;
+    box-shadow: none;
+}
+
+.input-group .form-control:focus + .input-group-text,
+.input-group .input-group-text + .form-control:focus {
+    border-color: var(--primary-color);
+}
+
+/* Botón limpiar búsqueda */
+#clear-search {
+    border-left: none;
+}
+
+/* Información de resultados */
+#results-info {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 1rem;
+}
+
+#results-info .badge {
+    font-size: 0.75rem;
+}
+
+/* Estados vacíos mejorados */
+.empty-state {
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    border: 2px dashed #dee2e6;
+    margin: 1rem 0;
+}
+
+.empty-state:hover {
+    border-color: var(--primary-color);
+    background-color: #f0f7ff;
+}
+
+/* Responsive para filtros */
+@media (max-width: 768px) {
+    .search-filters-container {
+        padding: 0.75rem;
+    }
+    
+    .input-group {
+        margin-bottom: 0.75rem;
+    }
+    
+    .btn-group {
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+    }
+    
+    #results-info {
+        font-size: 0.875rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .card-header .btn {
+        width: 100%;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
 /* === ESTILOS PARA DETALLES DE BODEGA === */
 
 /* Avatar circular para encargados */

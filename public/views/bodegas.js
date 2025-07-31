@@ -1,7 +1,19 @@
 // Módulo de Bodegas
 window.BodegasModule = {
+    // Variables para búsqueda y filtros
+    allBodegas: [], // Todos los datos originales
+    filteredBodegas: [], // Datos filtrados
+    currentFilters: {
+        search: '',
+        estado: ''
+    },
+
     // Renderizar lista de bodegas
     renderList: function(data) {
+        // Guardar datos originales
+        this.allBodegas = data || [];
+        this.filteredBodegas = [...this.allBodegas];
+
         // Obtener template pre-cargado
         const $template = $('#bodegas-list-template');
         if ($template.length === 0) {
@@ -13,20 +25,181 @@ window.BodegasModule = {
         const $container = $template.clone();
         $container.removeClass('template d-none').removeAttr('id');
         
-        if (!data || data.length === 0) {
-            // Mostrar estado vacío
-            $container.find('#bodegas-empty-state').removeClass('d-none');
-            $container.find('#bodegas-table-container').addClass('d-none');
-        } else {
-            // Mostrar tabla con datos
-            $container.find('#bodegas-empty-state').addClass('d-none');
-            $container.find('#bodegas-table-container').removeClass('d-none');
-            
-            // Generar filas de la tabla
-            this.populateTable($container, data);
-        }
+        // Configurar eventos de búsqueda y filtros
+        this.setupSearchAndFilters($container);
+        
+        // Mostrar datos iniciales
+        this.updateDisplay($container);
 
         return $container[0].outerHTML;
+    },
+
+    // Configurar eventos de búsqueda y filtros
+    setupSearchAndFilters: function($container) {
+        const self = this;
+
+        // Búsqueda en tiempo real
+        $container.find('#search-bodegas').on('input', function() {
+            self.currentFilters.search = $(this).val().trim();
+            self.applyFilters($container);
+        });
+
+        // Filtro de estado
+        $container.find('#filter-estado').on('change', function() {
+            self.currentFilters.estado = $(this).val();
+            self.applyFilters($container);
+        });
+
+        // Botón aplicar filtros
+        $container.find('#apply-filters').on('click', function() {
+            self.applyFilters($container);
+        });
+
+        // Botón limpiar búsqueda
+        $container.find('#clear-search').on('click', function() {
+            $container.find('#search-bodegas').val('');
+            self.currentFilters.search = '';
+            self.applyFilters($container);
+        });
+
+        // Botón reset filtros
+        $container.find('#reset-filters, #clear-all-filters').on('click', function() {
+            self.resetFilters($container);
+        });
+
+        // Delegación de eventos para elementos dinámicos
+        $(document).off('input', '#search-bodegas').on('input', '#search-bodegas', function() {
+            self.currentFilters.search = $(this).val().trim();
+            self.applyFilters();
+        });
+
+        $(document).off('change', '#filter-estado').on('change', '#filter-estado', function() {
+            self.currentFilters.estado = $(this).val();
+            self.applyFilters();
+        });
+
+        $(document).off('click', '#apply-filters').on('click', '#apply-filters', function() {
+            self.applyFilters();
+        });
+
+        $(document).off('click', '#clear-search').on('click', '#clear-search', function() {
+            $('#search-bodegas').val('');
+            self.currentFilters.search = '';
+            self.applyFilters();
+        });
+
+        $(document).off('click', '#reset-filters, #clear-all-filters').on('click', '#reset-filters, #clear-all-filters', function() {
+            self.resetFilters();
+        });
+    },
+
+    // Aplicar filtros
+    applyFilters: function($container = null) {
+        let filtered = [...this.allBodegas];
+
+        // Filtro de búsqueda
+        if (this.currentFilters.search) {
+            const searchTerm = this.currentFilters.search.toLowerCase();
+            filtered = filtered.filter(bodega => {
+                return (
+                    (bodega.codigo || '').toLowerCase().includes(searchTerm) ||
+                    (bodega.nombre || '').toLowerCase().includes(searchTerm) ||
+                    (bodega.ubicacion || '').toLowerCase().includes(searchTerm)
+                );
+            });
+        }
+
+        // Filtro de estado
+        if (this.currentFilters.estado !== '') {
+            const estadoFiltro = this.currentFilters.estado === 'true';
+            filtered = filtered.filter(bodega => {
+                const estadoBodega = bodega.activa === true || bodega.activa === 'true';
+                return estadoBodega === estadoFiltro;
+            });
+        }
+
+        this.filteredBodegas = filtered;
+        this.updateDisplay($container);
+        this.updateResultsInfo();
+    },
+
+    // Resetear filtros
+    resetFilters: function($container = null) {
+        this.currentFilters = {
+            search: '',
+            estado: ''
+        };
+
+        // Limpiar controles
+        $('#search-bodegas').val('');
+        $('#filter-estado').val('');
+
+        this.filteredBodegas = [...this.allBodegas];
+        this.updateDisplay($container);
+        this.updateResultsInfo();
+    },
+
+    // Actualizar display de datos
+    updateDisplay: function($container = null) {
+        if (!$container) {
+            // Si no se pasa contenedor, buscar en el DOM
+            $container = $('.card').has('#bodegas-table-container').first();
+        }
+
+        if (this.allBodegas.length === 0) {
+            // No hay datos originales - mostrar estado vacío
+            $container.find('#bodegas-empty-state').removeClass('d-none');
+            $container.find('#bodegas-no-results').addClass('d-none');
+            $container.find('#bodegas-table-container').addClass('d-none');
+            $container.find('#results-info').addClass('d-none');
+        } else if (this.filteredBodegas.length === 0) {
+            // Hay datos pero no hay resultados filtrados - mostrar sin resultados
+            $container.find('#bodegas-empty-state').addClass('d-none');
+            $container.find('#bodegas-no-results').removeClass('d-none');
+            $container.find('#bodegas-table-container').addClass('d-none');
+            $container.find('#results-info').removeClass('d-none');
+        } else {
+            // Mostrar tabla con datos filtrados
+            $container.find('#bodegas-empty-state').addClass('d-none');
+            $container.find('#bodegas-no-results').addClass('d-none');
+            $container.find('#bodegas-table-container').removeClass('d-none');
+            $container.find('#results-info').removeClass('d-none');
+            
+            // Generar filas de la tabla
+            this.populateTable($container, this.filteredBodegas);
+        }
+    },
+
+    // Actualizar información de resultados
+    updateResultsInfo: function() {
+        const $resultsInfo = $('#results-info');
+        const $resultsCount = $('#results-count');
+        const $activeFilters = $('#active-filters');
+
+        $resultsCount.text(this.filteredBodegas.length);
+
+        // Mostrar filtros activos
+        const activeFilters = [];
+        if (this.currentFilters.search) {
+            activeFilters.push(`Búsqueda: "${this.currentFilters.search}"`);
+        }
+        if (this.currentFilters.estado !== '') {
+            const estadoText = this.currentFilters.estado === 'true' ? 'Activadas' : 'Desactivadas';
+            activeFilters.push(`Estado: ${estadoText}`);
+        }
+
+        if (activeFilters.length > 0) {
+            $activeFilters.html(`| Filtros: ${activeFilters.join(', ')}`);
+        } else {
+            $activeFilters.html('');
+        }
+
+        // Mostrar/ocultar información si hay filtros aplicados
+        if (this.currentFilters.search || this.currentFilters.estado !== '') {
+            $resultsInfo.removeClass('d-none');
+        } else if (this.allBodegas.length > 0) {
+            $resultsInfo.addClass('d-none');
+        }
     },
 
     // Llenar tabla con datos

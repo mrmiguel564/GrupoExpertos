@@ -7,6 +7,45 @@
         </button>
     </div>
     <div class="card-body">
+        <!-- Buscador y Filtros -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control" id="search-bodegas" placeholder="Buscar por código, nombre o ubicación...">
+                    <button class="btn btn-outline-secondary" type="button" id="clear-search" title="Limpiar búsqueda">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="filter-estado">
+                    <option value="">Todos los estados</option>
+                    <option value="true">Activadas</option>
+                    <option value="false">Desactivadas</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" id="reset-filters" title="Limpiar todos los filtros">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de resultados -->
+        <div class="row mb-2">
+            <div class="col-12">
+                <div id="results-info" class="text-muted small d-none">
+                    <span id="results-count">0</span> bodega(s) encontrada(s)
+                    <span id="active-filters" class="ms-2"></span>
+                </div>
+            </div>
+        </div>
+
         <!-- Estado vacío -->
         <div id="bodegas-empty-state" class="empty-state text-center py-5 d-none">
             <i class="bi bi-warehouse display-1 text-muted mb-3"></i>
@@ -17,6 +56,16 @@
             </button>
         </div>
 
+        <!-- Estado sin resultados de búsqueda -->
+        <div id="bodegas-no-results" class="empty-state text-center py-5 d-none">
+            <i class="bi bi-search display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">No se encontraron resultados</h4>
+            <p class="text-muted">Intenta ajustar los criterios de búsqueda o filtros</p>
+            <button class="btn btn-outline-primary" id="clear-all-filters">
+                <i class="bi bi-arrow-clockwise"></i> Limpiar filtros
+            </button>
+        </div>
+
         <!-- Tabla de bodegas -->
         <div id="bodegas-table-container" class="table-responsive">
             <table class="table table-hover">
@@ -24,9 +73,9 @@
                     <tr>
                         <th>Código</th>
                         <th>Nombre</th>
-                        <th>Dirección</th>
+                        <th>Ubicación</th>
                         <th>Dotación</th>
-                        <th>Encargado</th>
+                        <th>Encargados</th>
                         <th>Fecha Creación</th>
                         <th>Estado</th>
                         <th width="120">Acciones</th>
