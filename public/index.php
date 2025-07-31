@@ -76,7 +76,7 @@ session_start();
     </nav>
 
     <!-- Main Content -->
-    <main class="container mt-4">
+    <main class="container-flex m-4">
         <!-- Alert Container -->
         <div id="alert-container"></div>
         
@@ -110,6 +110,22 @@ session_start();
     <!-- Modal Container -->
     <div id="modal-container"></div>
 
+    <!-- Templates Precargados -->
+    <!-- Template: Lista de Bodegas -->
+    <div id="bodegas-list-template" class="template d-none">
+        <?php include 'views/templates/bodegas-list.html'; ?>
+    </div>
+
+    <!-- Template: Formulario de Bodegas -->
+    <div id="bodegas-form-template" class="template d-none">
+        <?php include 'views/templates/bodegas-form.html'; ?>
+    </div>
+
+    <!-- Template: Detalles de Bodegas -->
+    <div id="bodegas-details-template" class="template d-none">
+        <?php include 'views/templates/bodegas-details.html'; ?>
+    </div>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -120,6 +136,6 @@ session_start();
     <script src="/views/asignaciones.js"></script>
     
     <!-- SPA Principal -->
-    <script src="/assets/js/spa-simple.js"></script>
+    <script src="/assets/js/spa.js"></script>
 </body>
 </html>

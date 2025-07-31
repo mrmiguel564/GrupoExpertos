@@ -1,0 +1,41 @@
+<!-- Template: Lista de Bodegas -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="card-title mb-0">Gestión de Bodegas</h5>
+        <button class="btn btn-primary" onclick="BodegasModule.showForm()">
+            <i class="bi bi-plus-lg"></i> Nueva Bodega
+        </button>
+    </div>
+    <div class="card-body">
+        <!-- Estado vacío -->
+        <div id="bodegas-empty-state" class="empty-state text-center py-5 d-none">
+            <i class="bi bi-warehouse display-1 text-muted mb-3"></i>
+            <h4 class="text-muted">No hay bodegas registradas</h4>
+            <p class="text-muted">Comienza agregando tu primera bodega</p>
+            <button class="btn btn-primary" onclick="BodegasModule.showForm()">
+                <i class="bi bi-plus-lg"></i> Agregar Primera Bodega
+            </button>
+        </div>
+
+        <!-- Tabla de bodegas -->
+        <div id="bodegas-table-container" class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Dotación</th>
+                        <th>Encargado</th>
+                        <th>Fecha Creación</th>
+                        <th>Estado</th>
+                        <th width="120">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="bodegas-table-body">
+                    <!-- Las filas se generarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

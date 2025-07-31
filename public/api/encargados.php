@@ -31,6 +31,9 @@ try {
                 case 'show':
                     $controller->apiShow($id);
                     break;
+                case 'all':
+                    $controller->apiGetAll();
+                    break;
                 case 'form':
                     $controller->apiForm($id);
                     break;

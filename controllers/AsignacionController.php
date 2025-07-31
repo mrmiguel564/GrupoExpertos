@@ -30,7 +30,7 @@ class AsignacionController
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-    
+
     public function apiStore()
     {
         try {

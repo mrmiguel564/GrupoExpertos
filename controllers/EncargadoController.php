@@ -40,9 +40,8 @@ class EncargadoController
                 'apellido' => $_POST['apellido'] ?? '',
                 'email' => $_POST['email'] ?? '',
                 'telefono' => $_POST['telefono'] ?? null,
-                'cargo' => $_POST['cargo'] ?? '',
+
                 'fecha_ingreso' => $_POST['fecha_ingreso'] ?? date('Y-m-d'),
-                'estado' => $_POST['estado'] ?? 'activo',
                 'observaciones' => $_POST['observaciones'] ?? null
             ];
             
@@ -92,5 +91,17 @@ class EncargadoController
     {
         // Formulario estático manejado por JavaScript
         echo json_encode(['message' => 'Formulario manejado por JavaScript']);
+    }
+    
+    public function apiGetAll()
+    {
+        try {
+            $encargadoModel = new Encargado();
+            $encargados = $encargadoModel->readAll();
+            echo json_encode($encargados);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
 }

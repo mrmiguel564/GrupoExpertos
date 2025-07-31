@@ -1,0 +1,112 @@
+<!-- Template: Formulario de Bodegas -->
+<div class="modal-header">
+    <h5 class="modal-title">
+        <i class="bi bi-warehouse"></i> <span id="form-title">Nueva Bodega</span>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <form id="bodega-form" data-ajax="true">
+        <input type="hidden" name="action" value="store">
+        <input type="hidden" name="module" value="bodegas">
+        <input type="hidden" id="bodega-id" name="id" value="">
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="codigo" class="form-label">Código *</label>
+                    <input type="text" class="form-control" id="codigo" name="codigo" required 
+                           placeholder="Ej: BOD001">
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre *</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required 
+                           placeholder="Ej: Bodega Central">
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="ubicacion" class="form-label">Ubicación *</label>
+            <input type="text" class="form-control" id="ubicacion" name="ubicacion" required 
+                   placeholder="Ej: Zona Industrial Norte">
+            <div class="invalid-feedback"></div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="dotacion" class="form-label">Dotación *</label>
+                    <input type="number" class="form-control" id="dotacion" name="dotacion" 
+                           min="0" step="0.01" required placeholder="Ej: 1500.50">
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="activa" class="form-label">Estado *</label>
+                    <select class="form-select" id="activa" name="activa" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="true">Activa</option>
+                        <option value="false">Inactiva</option>
+                    </select>
+                    <div class="invalid-feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selector de Encargados -->
+        <div class="mb-3">
+            <label for="encargados" class="form-label">Encargados Asignados *</label>
+            <div class="multi-select-container">
+                <!-- Contenedor de encargados seleccionados -->
+                <div id="selected-encargados" class="selected-items mb-2">
+                    <small class="text-muted">Ningún encargado seleccionado</small>
+                </div>
+                
+                <!-- Botón para abrir selector -->
+                <button type="button" class="btn btn-outline-secondary w-100 text-start" 
+                        id="open-encargados-selector" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-search me-2"></i>
+                    Buscar y seleccionar encargados...
+                    <i class="bi bi-chevron-down float-end mt-1"></i>
+                </button>
+                
+                <!-- Dropdown con buscador -->
+                <div class="dropdown-menu w-100 p-3" style="max-width: 100%;">
+                    <div class="mb-2">
+                        <input type="text" class="form-control" id="search-encargados" 
+                               placeholder="Buscar encargados..." autocomplete="off">
+                    </div>
+                    <div id="encargados-list" class="encargados-checkboxes" style="max-height: 200px; overflow-y: auto;">
+                        <!-- Los encargados se cargarán dinámicamente -->
+                        <div class="text-center text-muted py-3">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            Cargando encargados...
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Inputs hidden para enviar los IDs seleccionados -->
+                <div id="encargados-hidden-inputs"></div>
+                
+                <div class="invalid-feedback" id="encargados-error">
+                    Debe seleccionar al menos un encargado
+                </div>
+            </div>
+        </div>
+        
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+    <button type="submit" form="bodega-form" class="btn btn-primary" id="submit-btn">
+        <i class="bi bi-save"></i> <span id="submit-text">Guardar</span>
+    </button>
+</div>
