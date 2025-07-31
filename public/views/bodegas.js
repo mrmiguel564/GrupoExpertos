@@ -48,7 +48,7 @@ window.BodegasModule = {
             let encargadosHtml = '';
             if (bodega.encargados && bodega.encargados.length > 0) {
                 const encargadosItems = bodega.encargados.map(encargado => 
-                    `<span class="badge bg-primary me-1 mb-1">
+                    `<span class="badge bg-primary">
                         <i class="bi bi-person"></i> ${encargado.nombre} ${encargado.apellido}
                     </span>`
                 ).join('');
