@@ -40,9 +40,6 @@ class EncargadoController
                 'apellido' => $_POST['apellido'] ?? '',
                 'email' => $_POST['email'] ?? '',
                 'telefono' => $_POST['telefono'] ?? null,
-
-                'fecha_ingreso' => $_POST['fecha_ingreso'] ?? date('Y-m-d'),
-                'observaciones' => $_POST['observaciones'] ?? null
             ];
             
             if (isset($_POST['id']) && !empty($_POST['id'])) {

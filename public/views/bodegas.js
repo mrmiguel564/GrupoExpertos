@@ -44,6 +44,19 @@ window.BodegasModule = {
                 minute: '2-digit'
             });
 
+            // Generar lista de encargados
+            let encargadosHtml = '';
+            if (bodega.encargados && bodega.encargados.length > 0) {
+                const encargadosItems = bodega.encargados.map(encargado => 
+                    `<span class="badge bg-primary me-1 mb-1">
+                        <i class="bi bi-person"></i> ${encargado.nombre} ${encargado.apellido}
+                    </span>`
+                ).join('');
+                encargadosHtml = `<div class="encargados-list">${encargadosItems}</div>`;
+            } else {
+                encargadosHtml = '<span class="text-muted"><i class="bi bi-person-x"></i> Sin encargados</span>';
+            }
+
             const $row = $(`
                 <tr>
                     <td><code>${bodega.codigo || 'N/A'}</code></td>
@@ -51,9 +64,7 @@ window.BodegasModule = {
                     <td>${bodega.ubicacion}</td>
                     <td>${parseFloat(bodega.dotacion).toLocaleString()}</td>
                     <td>
-                        <span class="text-primary">
-                            <i class="bi bi-person"></i> ${bodega.encargado_nombre}
-                        </span>
+                        ${encargadosHtml}
                     </td>
                     <td><small>${fechaCreacion}</small></td>
                     <td>
@@ -67,7 +78,6 @@ window.BodegasModule = {
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button class="btn btn-outline-success" title="Editar" onclick="BodegasModule.showForm(${bodega.id})" >
-
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button class="btn btn-outline-danger" title="Eliminar" onclick="BodegasModule.deleteItem(${bodega.id}, '${bodega.nombre}')">
@@ -130,7 +140,144 @@ window.BodegasModule = {
             $('#bodega-id').val('');
             // Limpiar campos
             $('#bodega-form')[0].reset();
+            // Establecer estado por defecto
+            $('#activa').val('true');
         }
+        
+        // Configurar validaciones
+        this.setupValidations();
+    },
+
+    // Configurar validaciones del formulario
+    setupValidations: function() {
+        // Validación en tiempo real para código
+        $('#codigo').on('input', function() {
+            BodegasModule.validateField(this);
+        });
+
+        // Validación en tiempo real para nombre
+        $('#nombre').on('input', function() {
+            BodegasModule.validateField(this);
+        });
+
+        // Validación en tiempo real para ubicación
+        $('#ubicacion').on('input', function() {
+            BodegasModule.validateField(this);
+        });
+
+        // Validación en tiempo real para dotación
+        $('#dotacion').on('input', function() {
+            BodegasModule.validateField(this);
+        });
+
+        // Validación del formulario completo antes del envío
+        $('#bodega-form').on('submit', function(e) {
+            if (!BodegasModule.validateForm()) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    },
+
+    // Validar campo individual
+    validateField: function(field) {
+        const $field = $(field);
+        const value = $field.val().trim();
+        const fieldName = $field.attr('name');
+        let isValid = true;
+        let errorMessage = '';
+
+        switch (fieldName) {
+            case 'codigo':
+                if (!value) {
+                    isValid = false;
+                    errorMessage = 'El código es obligatorio';
+                } else if (value.length > 5) {
+                    isValid = false;
+                    errorMessage = 'El código no puede tener más de 5 caracteres';
+                } else if (!/^[A-Za-z0-9]+$/.test(value)) {
+                    isValid = false;
+                    errorMessage = 'El código solo puede contener letras y números';
+                }
+                break;
+
+            case 'nombre':
+                if (!value) {
+                    isValid = false;
+                    errorMessage = 'El nombre es obligatorio';
+                } else if (value.length < 3) {
+                    isValid = false;
+                    errorMessage = 'El nombre debe tener al menos 3 caracteres';
+                } else if (value.length > 100) {
+                    isValid = false;
+                    errorMessage = 'El nombre no puede tener más de 100 caracteres';
+                }
+                break;
+
+            case 'ubicacion':
+                if (!value) {
+                    isValid = false;
+                    errorMessage = 'La ubicación es obligatoria';
+                } else if (value.length < 5) {
+                    isValid = false;
+                    errorMessage = 'La ubicación debe tener al menos 5 caracteres';
+                } else if (value.length > 200) {
+                    isValid = false;
+                    errorMessage = 'La ubicación no puede tener más de 200 caracteres';
+                }
+                break;
+
+            case 'dotacion':
+                if (!value) {
+                    isValid = false;
+                    errorMessage = 'La dotación es obligatoria';
+                } else if (isNaN(value) || parseFloat(value) < 0) {
+                    isValid = false;
+                    errorMessage = 'La dotación debe ser un número mayor o igual a 0';
+                }
+                break;
+        }
+
+        // Aplicar clases de validación
+        if (isValid) {
+            $field.removeClass('is-invalid').addClass('is-valid');
+            $field.siblings('.invalid-feedback').hide();
+        } else {
+            $field.removeClass('is-valid').addClass('is-invalid');
+            $field.siblings('.invalid-feedback').text(errorMessage).show();
+        }
+
+        return isValid;
+    },
+
+    // Validar todo el formulario
+    validateForm: function() {
+        let isValid = true;
+
+        // Validar campos básicos
+        ['codigo', 'nombre', 'ubicacion', 'dotacion'].forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            if (!this.validateField(field)) {
+                isValid = false;
+            }
+        });
+
+        // Validar encargados
+        if (!this.validateEncargados()) {
+            isValid = false;
+        }
+
+        // Validar estado
+        const estado = $('#activa').val();
+        if (!estado) {
+            $('#activa').addClass('is-invalid');
+            isValid = false;
+        } else {
+            $('#activa').removeClass('is-invalid').addClass('is-valid');
+        }
+
+        return isValid;
     },
 
     // Cargar datos para edición
@@ -138,15 +285,17 @@ window.BodegasModule = {
         App.showLoading();
         
         $.ajax({
-            url: '/api/bodegas.php',
+            url: '/api/rutas.php',
             method: 'GET',
             data: {
+                module: 'bodegas',
                 action: 'show',
                 id: id
             },
             success: function(response) {
                 if (response) {
                     const bodega = response;
+                    console.log('Datos de bodega cargados:', bodega);
                     // Llenar formulario con los datos
                     $('#codigo').val(bodega.codigo);
                     $('#nombre').val(bodega.nombre);
@@ -154,8 +303,17 @@ window.BodegasModule = {
                     $('#dotacion').val(bodega.dotacion);
                     $('#activa').val(bodega.activa === true || bodega.activa === 'true' ? 'true' : 'false');
                     
-                    // Cargar encargados asignados
-                    BodegasModule.loadAssignedEncargados(id);
+
+                    bodega.encargados.forEach(function(encargado) {
+                        $(`#enc_${encargado.id}`).prop('checked', true);
+                    });
+
+                    BodegasModule.updateSelectedEncargados();
+                    BodegasModule.validateField('#codigo');
+                    BodegasModule.validateField('#nombre');
+                    BodegasModule.validateField('#ubicacion');
+                    BodegasModule.validateField('#dotacion');
+
                 }
                 App.hideLoading();
             },
@@ -167,28 +325,7 @@ window.BodegasModule = {
         });
     },
 
-    // Cargar encargados asignados a la bodega
-    loadAssignedEncargados: function(bodegaId) {
-        $.ajax({
-            url: '/api/bodegas.php',
-            method: 'GET',
-            data: {
-                action: 'encargados',
-                id: bodegaId
-            },
-            success: function(encargadosAsignados) {
-                // Marcar los checkboxes de los encargados asignados
-                encargadosAsignados.forEach(function(encargado) {
-                    $(`#enc_${encargado.id}`).prop('checked', true);
-                });
-                // Actualizar la vista de seleccionados
-                BodegasModule.updateSelectedEncargados();
-            },
-            error: function(xhr) {
-                console.error('Error cargando encargados asignados:', xhr);
-            }
-        });
-    },
+ 
 
     // Mostrar detalles
     showDetails: function(id) {
@@ -275,9 +412,10 @@ window.BodegasModule = {
         App.showLoading();
         
         $.ajax({
-            url: '/api/bodegas.php',
+            url: '/api/rutas.php',
             method: 'POST',
             data: {
+                module: 'bodegas',
                 action: 'delete',
                 id: id,
                 _method: 'DELETE'
@@ -299,9 +437,12 @@ window.BodegasModule = {
     // Cargar lista de encargados disponibles
     loadEncargados: function() {
         $.ajax({
-            url: '/api/encargados.php',
+            url: '/api/rutas.php',
             method: 'GET',
-            data: { action: 'all' },
+            data: { 
+                module: 'encargados',
+                action: 'all' 
+            },
             success: function(response) {
                 BodegasModule.renderEncargadosList(response);
             },
@@ -405,10 +546,21 @@ window.BodegasModule = {
             `);
             $selectedContainer.append($badge);
 
-            // Agregar input hidden para envío
+            // Agregar input hidden para envío (usando el nombre correcto)
             const $hiddenInput = $(`<input type="hidden" name="encargados[]" value="${encargadoId}">`);
             $hiddenInputs.append($hiddenInput);
         });
+
+        // También agregar un input con todos los IDs separados por coma (para compatibilidad)
+        const allIds = [];
+        selectedCheckboxes.each(function() {
+            allIds.push($(this).val());
+        });
+        if (allIds.length > 0) {
+            const $commaInput = $(`<input type="hidden" name="encargados" value="${allIds.join(',')}">`);
+            $hiddenInputs.append($commaInput);
+        }
+        this.validateEncargados();
     },
 
     // Validar que se haya seleccionado al menos un encargado
@@ -419,7 +571,7 @@ window.BodegasModule = {
 
         if (selectedCount === 0) {
             $container.addClass('is-invalid');
-            $error.show();
+            $error.text('Debe seleccionar al menos un encargado').show();
             return false;
         } else {
             $container.removeClass('is-invalid');

@@ -39,7 +39,7 @@ class AsignacionController
                 'bodega_id' => $_POST['bodega_id'] ?? '',
                 'encargado_id' => $_POST['encargado_id'] ?? '',
                 'fecha_asignacion' => $_POST['fecha_asignacion'] ?? date('Y-m-d'),
-                'observaciones' => $_POST['observaciones'] ?? null
+ 
             ];
             
             if (isset($_POST['id']) && !empty($_POST['id'])) {

@@ -168,11 +168,7 @@ window.EncargadosModule = {
                         </select>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="observaciones" class="form-label">Observaciones</label>
-                        <textarea class="form-control" id="observaciones" name="observaciones" rows="3" 
-                                  placeholder="Observaciones adicionales sobre el encargado"></textarea>
-                    </div>
+ 
                 </form>
             </div>
             <div class="modal-footer">
@@ -214,9 +210,9 @@ window.EncargadosModule = {
                     $('#email').val(encargado.email);
                     $('#telefono').val(encargado.telefono || '');
                     $('#cargo').val(encargado.cargo);
-                    $('#fecha_ingreso').val(encargado.fecha_ingreso);
+                    $('#fecha_ingreso').val(encargado.created_at);
                     $('#estado').val(encargado.estado);
-                    $('#observaciones').val(encargado.observaciones || '');
+ 
                 }
             },
             error: function(xhr) {
@@ -253,82 +249,7 @@ window.EncargadosModule = {
         });
     },
 
-    // Renderizar detalles
-    renderDetails: function(encargado) {
-        const detailsHtml = `
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-person"></i> Detalles de Encargado
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6>Información Personal</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <td><strong>Nombre:</strong></td>
-                                <td>${encargado.nombre} ${encargado.apellido}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email:</strong></td>
-                                <td>${encargado.email}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Teléfono:</strong></td>
-                                <td>${encargado.telefono || 'No especificado'}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Estado:</strong></td>
-                                <td>
-                                    ${encargado.estado === 'activo' 
-                                        ? '<span class="badge bg-success">Activo</span>' 
-                                        : '<span class="badge bg-danger">Inactivo</span>'}
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Información Laboral</h6>
-                        <table class="table table-sm">
-                            <tr>
-                                <td><strong>Cargo:</strong></td>
-                                <td>${encargado.cargo}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Fecha Ingreso:</strong></td>
-                                <td>${new Date(encargado.fecha_ingreso).toLocaleDateString()}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Registrado:</strong></td>
-                                <td>${new Date(encargado.created_at).toLocaleDateString()}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Actualizado:</strong></td>
-                                <td>${new Date(encargado.updated_at).toLocaleDateString()}</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                
-                ${encargado.observaciones ? `
-                    <div class="mt-3">
-                        <h6>Observaciones</h6>
-                        <p class="text-muted">${encargado.observaciones}</p>
-                    </div>
-                ` : ''}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success" onclick="EncargadosModule.showForm(${encargado.id})">
-                    <i class="bi bi-pencil"></i> Editar
-                </button>
-            </div>
-        `;
-        
-        App.renderModal(detailsHtml);
-    },
+
 
     // Eliminar encargado
     deleteItem: function(id, nombre) {

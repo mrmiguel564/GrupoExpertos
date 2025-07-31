@@ -36,32 +36,23 @@ class BodegaController
         try {
             $bodegaModel = new Bodega();
             $data = [
+                'id' => $_POST['id'] ?? '',
                 'nombre' => $_POST['nombre'] ?? '',
                 'codigo' => $_POST['codigo'] ?? '',
                 'ubicacion' => $_POST['ubicacion'] ?? '',
                 'dotacion' => $_POST['dotacion'] ?? 0,
-                'estado' => $_POST['estado'] ?? 'activa'
+                'estado' => $_POST['estado'] ?? 'activa',
+                'encargados' => $_POST['encargados'] ?? []
             ];
             
-            if (isset($_POST['id']) && !empty($_POST['id'])) {
-                // Actualizar
-                $result = $bodegaModel->update($_POST['id'], $data);
-                if ($result['success']) {
-                    echo json_encode(['message' => 'Bodega actualizada exitosamente']);
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['error' => $result['message']]);
-                }
+            $result = $bodegaModel->save($data);
+            if ($result['success']) {
+                echo json_encode(['message' => 'Bodega actualizada exitosamente']);
             } else {
-                // Crear
-                $result = $bodegaModel->create($data);
-                if ($result['success']) {
-                    echo json_encode(['message' => 'Bodega creada exitosamente']);
-                } else {
-                    http_response_code(400);
-                    echo json_encode(['error' => $result['message']]);
-                }
+                http_response_code(400);
+                echo json_encode(['error' => $result['message']]);
             }
+            
         } catch (Exception $e) {
             http_response_code(400);
             echo json_encode(['error' => $e->getMessage()]);

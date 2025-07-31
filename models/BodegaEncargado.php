@@ -42,7 +42,7 @@ class BodegaEncargado
     }
     
     public function create($data) {
-        $sql = "INSERT INTO bodega_encargado (bodega_id, encargado_id, fecha_asignacion, observaciones) 
+        $sql = "INSERT INTO bodega_encargado (bodega_id, encargado_id, fecha_asignacion) 
                 VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         
@@ -50,7 +50,6 @@ class BodegaEncargado
             $data['bodega_id'],
             $data['encargado_id'],
             $data['fecha_asignacion'],
-            $data['observaciones']
         ]);
         
         return [
@@ -60,14 +59,13 @@ class BodegaEncargado
     }
     
     public function update($id, $data) {
-        $sql = "UPDATE bodega_encargado SET bodega_id = ?, encargado_id = ?, fecha_asignacion = ?, observaciones = ? WHERE id = ?";
+        $sql = "UPDATE bodega_encargado SET bodega_id = ?, encargado_id = ?, fecha_asignacion = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         
         $result = $stmt->execute([
             $data['bodega_id'],
             $data['encargado_id'],
             $data['fecha_asignacion'],
-            $data['observaciones'],
             $id
         ]);
         
