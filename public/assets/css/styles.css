@@ -389,16 +389,15 @@ footer {
 /* ===== ESTILOS PARA ENCARGADOS EN TABLA ===== */
 
 /* Estilos para lista de encargados en tabla */
-.encargados-list {
-    max-width: 200px;
-}
+
 
 .encargados-list .badge {
+    margin: 0.1rem;
     font-size: 0.75em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 180px;
+
     display: inline-block;
 }
 
