@@ -346,7 +346,7 @@ window.EncargadosModule = {
                         <div class="flex-shrink-0 text-end">
                             ${estadoBadge}
                             <div class="mt-1">
-                                <button class="btn btn-sm btn-outline-primary" onclick="BodegasModule.showDetails(${bodega.id})" title="Ver detalles de la bodega">
+                                <button class="btn btn-sm btn-outline-primary" data-bs-dismiss="modal" onclick="BodegasModule.showDetails(${bodega.id})" title="Ver detalles de la bodega">
                                     <i class="bi bi-eye"></i>
                                 </button>
                             </div>
