@@ -14,6 +14,70 @@
     --transition: all 0.15s ease-in-out;
 }
 
+/* === LAYOUT PRINCIPAL === */
+
+/* Layout principal con flexbox */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contenido principal que crece */
+main {
+    flex: 1;
+    min-height: 70vh; /* Tamaño mínimo del contenido principal */
+    padding: 2rem 0;
+}
+
+.module-content {
+    min-height: 500px; /* Altura mínima del contenido del módulo */
+}
+
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0.375rem;
+}
+
+/* Footer siempre abajo */
+footer {
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+/* Contenedor responsivo */
+.container-main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Ajustes responsivos para layout */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem 0;
+        min-height: 60vh;
+    }
+    
+    .module-content {
+        min-height: 400px;
+    }
+}
+
 /* Templates ocultos */
 .template {
     display: none !important;
