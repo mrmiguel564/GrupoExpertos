@@ -38,12 +38,12 @@ class Bodega
     }
     
     private function getEncargadosByBodegaId($bodegaId) {
-        $sql = "SELECT e.id, e.nombre, e.apellido, e.email, e.telefono,
+        $sql = "SELECT e.id, e.nombre, e.p_apellido, e.s_apellido, e.email, e.telefono,
                        be.fecha_asignacion
                 FROM bodega_encargado be
                 INNER JOIN encargados e ON be.encargado_id = e.id
                 WHERE be.bodega_id = ?
-                ORDER BY e.nombre, e.apellido";
+                ORDER BY e.nombre, e.p_apellido";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$bodegaId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

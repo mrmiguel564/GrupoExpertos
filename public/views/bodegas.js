@@ -8,6 +8,25 @@ window.BodegasModule = {
         estado: ''
     },
 
+    // Función auxiliar para formatear nombre completo de encargado
+    formatNombreCompletoEncargado: function(encargado) {
+        if (!encargado) return 'Sin nombre';
+        
+        const nombre = encargado.nombre || '';
+        const p_apellido = encargado.p_apellido || '';
+        const s_apellido = encargado.s_apellido || '';
+        
+        let nombreCompleto = nombre;
+        if (p_apellido) {
+            nombreCompleto += ' ' + p_apellido;
+        }
+        if (s_apellido) {
+            nombreCompleto += ' ' + s_apellido;
+        }
+        
+        return nombreCompleto.trim() || 'Sin nombre';
+    },
+
     // Renderizar lista de bodegas
     renderList: function(data) {
         // Guardar datos originales
@@ -222,7 +241,7 @@ window.BodegasModule = {
             if (bodega.encargados && bodega.encargados.length > 0) {
                 const encargadosItems = bodega.encargados.map(encargado => 
                     `<span class="badge bg-primary">
-                        <i class="bi bi-person"></i> ${encargado.nombre} ${encargado.apellido}
+                        <i class="bi bi-person"></i> ${this.formatNombreCompletoEncargado(encargado)}
                     </span>`
                 ).join('');
                 encargadosHtml = `<div class="encargados-list">${encargadosItems}</div>`;
@@ -638,7 +657,7 @@ window.BodegasModule = {
                         </div>
                         <div class="flex-grow-1">
                             <div class="fw-bold text-dark mb-1">
-                                ${encargado.nombre || 'Sin nombre'} ${encargado.apellido || ''}
+                                ${this.formatNombreCompletoEncargado(encargado)}
                             </div>
                             <div class="small text-muted">
                                 <i class="bi bi-envelope me-1"></i>
@@ -739,7 +758,7 @@ window.BodegasModule = {
                     <input type="checkbox" id="enc_${encargado.id}" value="${encargado.id}">
                     <label for="enc_${encargado.id}" class="form-check-label">
                         <div class="encargado-info">
-                            <span class="encargado-name">${encargado.nombre} ${encargado.apellido}</span>
+                            <span class="encargado-name">${this.formatNombreCompletoEncargado(encargado)}</span>
                             <span class="encargado-details">${encargado.email}</span>
                         </div>
                     </label>

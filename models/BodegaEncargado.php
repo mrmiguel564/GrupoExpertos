@@ -9,7 +9,7 @@ class BodegaEncargado
     }
     
     public function readAll() {
-        $sql = "SELECT be.*, b.nombre as bodega_nombre, e.nombre as encargado_nombre, e.apellido as encargado_apellido
+        $sql = "SELECT be.*, b.nombre as bodega_nombre, e.nombre as encargado_nombre, e.p_apellido as encargado_p_apellido, e.s_apellido as encargado_s_apellido
                 FROM bodega_encargado be
                 LEFT JOIN bodegas b ON be.bodega_id = b.id
                 LEFT JOIN encargados e ON be.encargado_id = e.id
@@ -20,7 +20,7 @@ class BodegaEncargado
     }
     
     public function readById($id) {
-        $sql = "SELECT be.*, b.nombre as bodega_nombre, e.nombre as encargado_nombre, e.apellido as encargado_apellido
+        $sql = "SELECT be.*, b.nombre as bodega_nombre, e.nombre as encargado_nombre, e.p_apellido as encargado_p_apellido, e.s_apellido as encargado_s_apellido
                 FROM bodega_encargado be
                 LEFT JOIN bodegas b ON be.bodega_id = b.id
                 LEFT JOIN encargados e ON be.encargado_id = e.id
@@ -31,11 +31,11 @@ class BodegaEncargado
     }
     
     public function getEncargadosByBodegaId($bodegaId) {
-        $sql = "SELECT e.id, e.nombre, e.apellido, e.email, 
+        $sql = "SELECT e.id, e.nombre, e.p_apellido, e.s_apellido, e.email, e.telefono
                 FROM bodega_encargado be
                 INNER JOIN encargados e ON be.encargado_id = e.id
                 WHERE be.bodega_id = ?
-                ORDER BY e.nombre, e.apellido";
+                ORDER BY e.nombre, e.p_apellido";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$bodegaId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

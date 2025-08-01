@@ -1,5 +1,24 @@
 // Módulo de Encargados
 window.EncargadosModule = {
+    // Función auxiliar para formatear nombre completo
+    formatNombreCompleto: function(encargado) {
+        if (!encargado) return 'Sin nombre';
+        
+        const nombre = encargado.nombre || '';
+        const p_apellido = encargado.p_apellido || '';
+        const s_apellido = encargado.s_apellido || '';
+        
+        let nombreCompleto = nombre;
+        if (p_apellido) {
+            nombreCompleto += ' ' + p_apellido;
+        }
+        if (s_apellido) {
+            nombreCompleto += ' ' + s_apellido;
+        }
+        
+        return nombreCompleto.trim() || 'Sin nombre';
+    },
+
     // Renderizar lista de encargados
     renderList: function(data) {
         if (!data || data.length === 0) {
@@ -32,7 +51,7 @@ window.EncargadosModule = {
                 <tr>
                     
                     <td>
-                        <strong>${encargado.nombre} ${encargado.apellido}</strong><br>
+                        <strong>${this.formatNombreCompleto(encargado)}</strong><br>
                         <small class="text-muted">${encargado.email}</small>
                     </td>
                     <td>${encargado.telefono || 'No especificado'}</td>
@@ -45,7 +64,7 @@ window.EncargadosModule = {
                             <button class="btn btn-outline-success" onclick="EncargadosModule.showForm(${encargado.id})" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </button>
-                            <button class="btn btn-outline-danger" onclick="EncargadosModule.deleteItem(${encargado.id}, '${encargado.nombre} ${encargado.apellido}')" title="Eliminar">
+                            <button class="btn btn-outline-danger" onclick="EncargadosModule.deleteItem(${encargado.id}, '${this.formatNombreCompleto(encargado).replace(/'/g, "\\'")}')" title="Eliminar">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -113,14 +132,21 @@ window.EncargadosModule = {
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="apellido" class="form-label">Apellido *</label>
-                                <input type="text" class="form-control" id="apellido" name="apellido" required 
-                                       placeholder="Ej: González López">
+                                <label for="p_apellido" class="form-label">Primer Apellido *</label>
+                                <input type="text" class="form-control" id="p_apellido" name="p_apellido" required 
+                                       placeholder="Ej: González">
                             </div>
                         </div>
                     </div>
                     
                     <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="s_apellido" class="form-label">Segundo Apellido</label>
+                                <input type="text" class="form-control" id="s_apellido" name="s_apellido" 
+                                       placeholder="Ej: López (opcional)">
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email *</label>
@@ -128,6 +154,9 @@ window.EncargadosModule = {
                                        placeholder="ejemplo@correo.com">
                             </div>
                         </div>
+                    </div>
+                    
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="telefono" class="form-label">Teléfono</label>
@@ -135,9 +164,6 @@ window.EncargadosModule = {
                                        placeholder="Ej: +56 9 1234 5678">
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="fecha_ingreso" class="form-label">Fecha de Ingreso *</label>
@@ -182,7 +208,8 @@ window.EncargadosModule = {
                 if (response && response.data) {
                     const encargado = response.data;
                     $('#nombre').val(encargado.nombre);
-                    $('#apellido').val(encargado.apellido);
+                    $('#p_apellido').val(encargado.p_apellido);
+                    $('#s_apellido').val(encargado.s_apellido || ''); // Segundo apellido puede ser null
                     $('#email').val(encargado.email);
                     $('#telefono').val(encargado.telefono || '');
                     $('#fecha_ingreso').val(encargado.created_at);
@@ -242,7 +269,7 @@ window.EncargadosModule = {
         App.renderModal($detailsClone.html());
         
         // Llenar datos en el template
-        $('#detail-nombre-completo').text(`${encargado.nombre || 'Sin nombre'} ${encargado.apellido || ''}`);
+        $('#detail-nombre-completo').text(this.formatNombreCompleto(encargado));
         $('#detail-email').text(encargado.email || 'Sin email');
         $('#detail-email-full').text(encargado.email || 'No especificado');
         $('#detail-cedula').text(encargado.cedula || 'N/A');
