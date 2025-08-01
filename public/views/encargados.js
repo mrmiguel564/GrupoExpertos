@@ -331,7 +331,7 @@ window.EncargadosModule = {
                         </div>
                         <div class="flex-grow-1">
                             <div class="fw-bold text-dark mb-1">
-                                <code class="me-2">${bodega.codigo || 'N/A'}</code>
+                                <span class="me-2">${bodega.codigo || 'N/A'}</span>
                                 ${bodega.nombre || 'Sin nombre'}
                             </div>
                             <div class="small text-muted">

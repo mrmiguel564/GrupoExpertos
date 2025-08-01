@@ -566,7 +566,7 @@ window.BodegasModule = {
                     month: '2-digit',
                     year: 'numeric'
                 })}
-                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaCreacion.toLocaleTimeString('es-ES', {
+                <span class="text-muted" style="font-size: 0.75rem;">${fechaCreacion.toLocaleTimeString('es-ES', {
                     hour: '2-digit',
                     minute: '2-digit'
                 })}</span>
@@ -584,7 +584,7 @@ window.BodegasModule = {
                     month: '2-digit',
                     year: 'numeric'
                 })}
-                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaActualizacion.toLocaleTimeString('es-ES', {
+                <span class="text-muted" style="font-size: 0.75rem;">${fechaActualizacion.toLocaleTimeString('es-ES', {
                     hour: '2-digit',
                     minute: '2-digit'
                 })}</span>
