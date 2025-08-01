@@ -16,7 +16,7 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link href="/assets/css/styles.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -120,6 +120,6 @@ session_start();
     <script src="/views/asignaciones.js"></script>
     
     <!-- SPA Principal -->
-    <script src="/assets/js/spa.js"></script>
+    <script src="assets/js/spa.js"></script>
 </body>
 </html>

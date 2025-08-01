@@ -8,7 +8,7 @@ Sistema web PHP con arquitectura MVC + SPA para gestión de bodegas, encargados 
 ## Tecnologías
 
 ```
-Backend:  PHP 7.4+ con PDO + MySQL
+Backend:  PHP 7.4+ con PDO + Postgresql
 Frontend: JavaScript ES6+ con jQuery + Bootstrap 5
 Patrón:   MVC + Single Page Application (SPA)
 ```
@@ -21,13 +21,13 @@ Patrón:   MVC + Single Page Application (SPA)
 ```php
 class Database {
     private static $instance = null;    // Singleton
-    private $connection;               // PDO MySQL
+    private $connection;                
     
     public static function getInstance() { ... }
     public function getConnection() { ... }
 }
 ```
-- Conexión única MySQL con PDO
+- Conexión única Postgresql con PDO
 - Variables de entorno con `.env`
 
 ### Modelos (`models/`)
