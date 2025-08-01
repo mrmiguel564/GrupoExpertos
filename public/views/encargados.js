@@ -36,11 +36,6 @@ window.EncargadosModule = {
                     <td>${encargado.telefono || 'No especificado'}</td>
                     <td>${new Date(encargado.fecha_ingreso).toLocaleDateString()}</td>
                     <td>
-                        ${encargado.estado === 'activo' 
-                            ? '<span class="badge bg-success">Activo</span>' 
-                            : '<span class="badge bg-danger">Inactivo</span>'}
-                    </td>
-                    <td>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-primary" onclick="EncargadosModule.showDetails(${encargado.id})" title="Ver detalles">
                                 <i class="bi bi-eye"></i>
@@ -73,7 +68,6 @@ window.EncargadosModule = {
                                     <th>Encargado</th> 
                                     <th>Teléfono</th>
                                     <th>Fecha Ingreso</th>
-                                    <th>Estado</th>
                                     <th width="120">Acciones</th>
                                 </tr>
                             </thead>
@@ -190,7 +184,6 @@ window.EncargadosModule = {
                     $('#email').val(encargado.email);
                     $('#telefono').val(encargado.telefono || '');
                     $('#fecha_ingreso').val(encargado.created_at);
-                    $('#estado').val(encargado.estado);
  
                 }
             },

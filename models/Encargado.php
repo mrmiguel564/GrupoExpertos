@@ -23,17 +23,15 @@ class Encargado
     }
     
     public function create($data) {
-        $sql = "INSERT INTO encargados (nombre, apellido, email, telefono, estado) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO encargados (nombre, apellido, email, telefono) 
+                VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         
         $result = $stmt->execute([
             $data['nombre'],
             $data['apellido'],
             $data['email'],
-            $data['telefono'],
-            $data['estado'] ?? 'activo',
-
+            $data['telefono']
         ]);
         
         return [
@@ -43,8 +41,7 @@ class Encargado
     }
     
     public function update($id, $data) {
-        $sql = "UPDATE encargados SET nombre = ?, apellido = ?, email = ?, telefono = ?, 
-                  estado = ?  WHERE id = ?";
+        $sql = "UPDATE encargados SET nombre = ?, apellido = ?, email = ?, telefono = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         
         $result = $stmt->execute([
@@ -52,9 +49,6 @@ class Encargado
             $data['apellido'],
             $data['email'],
             $data['telefono'],
- 
-            $data['estado'] ?? 'activo',
- 
             $id
         ]);
         
