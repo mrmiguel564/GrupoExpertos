@@ -27,14 +27,16 @@ window.EncargadosModule = {
         
         let rows = '';
         data.forEach(encargado => {
+            //console.log('Procesando encargado:', encargado);
             rows += `
                 <tr>
+                    
                     <td>
                         <strong>${encargado.nombre} ${encargado.apellido}</strong><br>
                         <small class="text-muted">${encargado.email}</small>
                     </td>
                     <td>${encargado.telefono || 'No especificado'}</td>
-                    <td>${new Date(encargado.fecha_ingreso).toLocaleDateString()}</td>
+                    <td>${new Date(encargado.created_at).toLocaleDateString()}</td>
                     <td>
                         <div class="btn-group btn-group-sm">
                             <button class="btn btn-outline-primary" onclick="EncargadosModule.showDetails(${encargado.id})" title="Ver detalles">
