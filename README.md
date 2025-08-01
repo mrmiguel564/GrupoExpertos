@@ -1,241 +1,273 @@
 # Sistema de Gestión de Bodegas y Encargados
+## Documentación del Código Fuente
 
-Un sistema web desarrollado en PHP 7.4 con PostgreSQL para la gestión de bodegas y encargados.
+Sistema web PHP con arquitectura MVC + SPA para gestión de bodegas, encargados y sus relaciones.
 
-## Características
+---
 
-- **Gestión de Bodegas**: CRUD completo para bodegas con validaciones
-- **Gestión de Encargados**: CRUD completo para encargados 
-- **Relaciones**: Sistema de asignación entre bodegas y encargados
-- **Interfaz Responsiva**: Bootstrap 5 para una interfaz moderna
-- **Validaciones**: Validaciones tanto en frontend como backend
-- **Búsqueda y Filtros**: Funcionalidades de búsqueda en tiempo real
+## Tecnologías
 
-## Requisitos del Sistema
-
-- PHP 7.4 o superior
-- PostgreSQL 12 o superior
-- Apache/Nginx
-- Composer
-
-## Instalación
-
-### 1. Clonar el Repositorio
-
-```bash
-git clone <repository-url>
-cd GrupoExpertos
+```
+Backend:  PHP 7.4+ con PDO + MySQL
+Frontend: JavaScript ES6+ con jQuery + Bootstrap 5
+Patrón:   MVC + Single Page Application (SPA)
 ```
 
-### 2. Instalar Dependencias
+---
 
-```bash
-composer install
-```
+## Backend - PHP
 
-### 3. Configuración de Base de Datos
-
-1. Crear la base de datos PostgreSQL:
-```sql
-CREATE DATABASE bodegas_sistema;
-```
-
-2. Ejecutar el script de esquema:
-```bash
-psql -U postgres -d bodegas_sistema -f database/schema.sql
-```
-
-### 4. Configuración de Variables de Entorno
-
-1. Copiar el archivo de ejemplo:
-```bash
-copy .env.example .env
-```
-
-2. Editar `.env` con tus credenciales:
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=bodegas_sistema
-DB_USER=tu_usuario
-DB_PASS=tu_password
-
-APP_URL=http://localhost
-APP_ENV=development
-```
-
-### 5. Configuración del Servidor Web
-
-#### Apache
-
-Crear un VirtualHost apuntando a la carpeta `public/`:
-
-```apache
-<VirtualHost *:80>
-    DocumentRoot "C:/ProyectosGIT/GrupoExpertos/public"
-    ServerName bodegas.local
+### Configuración (`config/Database.php`)
+```php
+class Database {
+    private static $instance = null;    // Singleton
+    private $connection;               // PDO MySQL
     
-    <Directory "C:/ProyectosGIT/GrupoExpertos/public">
-        AllowOverride All
-        Require all granted
-        DirectoryIndex index.php
-    </Directory>
-</VirtualHost>
+    public static function getInstance() { ... }
+    public function getConnection() { ... }
+}
 ```
+- Conexión única MySQL con PDO
+- Variables de entorno con `.env`
 
-#### Nginx
+### Modelos (`models/`)
 
-```nginx
-server {
-    listen 80;
-    server_name bodegas.local;
-    root C:/ProyectosGIT/GrupoExpertos/public;
-    
-    index index.php;
-    
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
+#### Bodega.php
+```php
+class Bodega {
+    public function readAll() { ... }      // Listar con encargados
+    public function readById($id) { ... }  // Individual + relaciones
+    public function create($data) { ... }  // Crear + asignar encargados
+    public function update($id, $data) { ... } // Actualizar + relaciones
+}
+```
+- **Campos**: codigo, nombre, ubicacion, dotacion, activa
+- **Relación**: Many-to-Many con Encargados
+
+#### Encargado.php
+```php
+class Encargado {
+    public function create($data) {
+        // INSERT nombre, p_apellido, s_apellido, email, telefono
     }
-    
-    location ~ \.php$ {
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include fastcgi_params;
+    public function readById($id) {
+        // Encargado + array de bodegas asignadas
     }
 }
 ```
+- **Campos**: nombre, p_apellido (requerido), s_apellido (opcional), email, telefono
+- **Relación**: Many-to-Many con Bodegas
 
-## Estructura del Proyecto
+#### BodegaEncargado.php
+```php
+class BodegaEncargado {
+    public function readAll() { ... }                    // Todas las asignaciones
+    public function getEncargadosByBodegaId($id) { ... } // Encargados de bodega
+}
+```
+- **Función**: Gestiona relación Many-to-Many
+
+### APIs REST (`public/api/`)
+```php
+// /api/bodegas.php y /api/encargados.php
+$action = $_GET['action'] ?? $_POST['action'];
+
+switch($action) {
+    case 'all':    // GET: Listar
+    case 'show':   // GET: Individual
+    case 'store':  // POST: Crear
+    case 'update': // POST: Actualizar  
+    case 'delete': // POST: Eliminar
+}
+
+// Retorna JSON: { success, data, message, errors }
+```
+
+---
+
+## Frontend - JavaScript
+
+### SPA Principal (`public/assets/js/spa.js`)
+```javascript
+window.App = {
+    init() { ... },                    // Inicializa aplicación
+    loadModule(name) { ... },          // Carga módulos dinámicamente
+    renderModal(content) { ... },      // Gestiona modales
+    showNotification(msg, type) { ... } // Sistema de alertas
+}
+```
+
+### Módulo Bodegas (`public/views/bodegas.js`)
+```javascript
+window.BodegasModule = {
+    // Cache para filtros
+    allBodegas: [],
+    filteredBodegas: [],
+    
+    renderList(data) { ... },      // Lista + filtros en tiempo real
+    applyFilters() { ... },        // Filtro por texto/estado
+    showForm(id) { ... },          // Modal crear/editar
+    showDetails(id) { ... },       // Modal detalles
+    validateField(field) { ... }   // Validación instantánea
+}
+```
+
+### Módulo Encargados (`public/views/encargados.js`)
+```javascript
+window.EncargadosModule = {
+    formatNombreCompleto(encargado) {
+        // Combina nombre + p_apellido + s_apellido
+        return `${nombre} ${p_apellido} ${s_apellido || ''}`.trim();
+    },
+    
+    renderList(data) { ... },           // Lista con nombres completos
+    showForm(id) { ... },               // Formulario apellidos separados
+    renderDetails(encargado) { ... },   // Detalles + bodegas asignadas
+    renderBodegasAsignadas(bodegas) { ... } // Lista de bodegas del encargado
+}
+```
+
+### Templates HTML (`public/views/templates/`)
+Templates pre-cargados para modales:
+- `bodegas-details.html` - Detalles de bodega
+- `encargados-details.html` - Detalles de encargado
+- `bodegas-form.html` - Formulario bodega
+
+```html
+<!-- IDs específicos para JavaScript -->
+<span id="detail-nombre">-</span>
+<div id="detail-encargados-list">...</div>
+```
+
+---
+
+## Base de Datos
+
+```sql
+-- Bodegas
+CREATE TABLE bodegas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    codigo VARCHAR(10) UNIQUE NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    ubicacion VARCHAR(200),
+    dotacion INT DEFAULT 0,
+    activa BOOLEAN DEFAULT true,
+    created_at, updated_at TIMESTAMP
+);
+
+-- Encargados con apellidos separados
+CREATE TABLE encargados (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    p_apellido VARCHAR(100) NOT NULL,     -- Primer apellido
+    s_apellido VARCHAR(100) NULL,         -- Segundo apellido (opcional)
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    created_at, updated_at TIMESTAMP
+);
+
+-- Relación Many-to-Many
+CREATE TABLE bodega_encargado (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    bodega_id INT NOT NULL,
+    encargado_id INT NOT NULL,
+    fecha_asignacion DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (bodega_id) REFERENCES bodegas(id) ON DELETE CASCADE,
+    FOREIGN KEY (encargado_id) REFERENCES encargados(id) ON DELETE CASCADE
+);
+```
+
+---
+
+## Estructura de Archivos
 
 ```
 GrupoExpertos/
 ├── config/
-│   └── Database.php          # Configuración de base de datos
+│   └── Database.php                    # Conexión singleton
 ├── controllers/
-│   ├── BaseController.php    # Controlador base
-│   └── BodegaController.php  # Controlador de bodegas
+│   ├── BodegaController.php           # CRUD bodegas
+│   └── EncargadoController.php        # CRUD encargados
 ├── models/
-│   ├── BaseModel.php         # Modelo base
-│   ├── Bodega.php           # Modelo de bodegas
-│   ├── Encargado.php        # Modelo de encargados
-│   └── BodegaEncargado.php  # Modelo de relaciones
-├── views/
-│   ├── layout.php           # Layout principal
-│   ├── bodegas/             # Vistas de bodegas
-│   └── errors/              # Páginas de error
+│   ├── Bodega.php                     # Modelo bodega
+│   ├── Encargado.php                  # Modelo encargado
+│   └── BodegaEncargado.php            # Relaciones M:N
 ├── public/
-│   ├── index.php           # Punto de entrada
-│   └── assets/             # CSS, JS, imágenes
-├── database/
-│   └── schema.sql          # Esquema de base de datos
-├── composer.json           # Dependencias PHP
-├── .env.example           # Ejemplo de variables de entorno
-└── README.md             # Este archivo
+│   ├── index.php                      # SPA principal
+│   ├── api/
+│   │   ├── bodegas.php               # API REST bodegas
+│   │   └── encargados.php            # API REST encargados
+│   ├── assets/
+│   │   ├── css/styles.css            # Estilos custom
+│   │   └── js/spa.js                 # Controlador SPA
+│   └── views/
+│       ├── bodegas.js                # Módulo bodegas
+│       ├── encargados.js             # Módulo encargados
+│       └── templates/                # Templates HTML
+└── composer.json                     # Dependencias PHP
 ```
 
-## Uso del Sistema
+---
 
-### Gestión de Bodegas
+## Flujo de Datos
 
-1. **Listar Bodegas**: Ir a `/bodegas`
-2. **Crear Bodega**: Click en "Nueva Bodega"
-3. **Editar Bodega**: Click en el ícono de editar en la tabla
-4. **Eliminar Bodega**: Click en el ícono de eliminar (con confirmación)
-5. **Ver Detalles**: Click en el ícono de ver
+### Carga de Módulo
+```
+Usuario → Click Menu → App.loadModule() → AJAX → API → JSON → Renderizar
+```
 
-### Características de las Bodegas
+### Operación CRUD
+```
+Form → Validate JS → AJAX POST → Controller → Model → Database → JSON Response → Update UI
+```
 
-- Nombre (requerido)
-- Dirección
-- Teléfono
-- Email (con validación)
-- Capacidad máxima
-- Estado (activo/inactivo)
+---
 
-### Validaciones
+## APIs
 
-- **Frontend**: Validación en tiempo real con JavaScript
-- **Backend**: Validaciones de servidor con PHP
-- **Base de Datos**: Constraints y triggers de PostgreSQL
+### Endpoints
+```
+GET  /api/bodegas.php?action=all        # Listar bodegas
+GET  /api/bodegas.php?action=show&id=1  # Bodega específica
+POST /api/bodegas.php (action=store)    # Crear bodega
+POST /api/bodegas.php (action=update)   # Actualizar bodega
+POST /api/bodegas.php (action=delete)   # Eliminar bodega
 
-## API Endpoints
+GET  /api/encargados.php?action=all     # Listar encargados
+GET  /api/encargados.php?action=show&id=1 # Encargado específico
+POST /api/encargados.php (action=store) # Crear encargado
+```
 
-El sistema incluye algunos endpoints para AJAX:
+### Formato JSON
+```json
+{
+    "success": true,
+    "data": {
+        "id": 1,
+        "nombre": "Juan",
+        "p_apellido": "González",
+        "s_apellido": "López",
+        "bodegas": [...]
+    },
+    "message": "OK"
+}
+```
 
-- `GET /bodegas/search?q=nombre` - Buscar bodegas por nombre
-- `GET /bodegas/getByEstado?estado=activo` - Filtrar por estado
+---
 
-## Seguridad
+## Características Técnicas
 
-- Sanitización de entradas con `htmlspecialchars()`
-- Consultas preparadas (PDO) para prevenir SQL Injection
-- Validación tanto en frontend como backend
-- Manejo de errores con logs
+- **SPA**: Sin recargas de página
+- **Templates**: HTML separado de JavaScript
+- **Filtros**: Búsqueda en tiempo real
+- **Validaciones**: Frontend + Backend
+- **Relaciones**: Many-to-Many con navegación cruzada
+- **Responsive**: Bootstrap 5 desktop-first
 
-## Extensibilidad
+---
 
-El sistema está diseñado para ser fácilmente extensible:
+## Patrones Implementados
 
-1. **Nuevos Modelos**: Extender `BaseModel`
-2. **Nuevos Controladores**: Extender `BaseController`
-3. **Nuevas Rutas**: Agregar en `public/index.php`
-4. **Nuevas Vistas**: Seguir la estructura existente
-
-## Base de Datos
-
-### Tablas Principales
-
-1. **bodega**: Información de bodegas
-2. **encargado**: Información de encargados
-3. **bodega_encargado**: Relación muchos a muchos
-
-### Características de la BD
-
-- Triggers automáticos para fechas de actualización
-- Índices para optimización
-- Constraints de integridad
-- Datos de ejemplo incluidos
-
-## Desarrollo
-
-### Agregar Nuevas Funcionalidades
-
-1. Crear el modelo en `models/`
-2. Crear el controlador en `controllers/`
-3. Crear las vistas en `views/`
-4. Agregar rutas en `public/index.php`
-
-### Estilo de Código
-
-- PSR-4 para autoloading
-- Documentación en español
-- Nombres descriptivos
-- Separación clara de responsabilidades
-
-## Resolución de Problemas
-
-### Error de Conexión a BD
-
-1. Verificar credenciales en `.env`
-2. Confirmar que PostgreSQL esté ejecutándose
-3. Verificar que la base de datos exista
-
-### Error 404
-
-1. Verificar configuración del servidor web
-2. Confirmar que apunte a la carpeta `public/`
-3. Verificar que mod_rewrite esté habilitado (Apache)
-
-### Dependencias
-
-1. Ejecutar `composer install`
-2. Verificar versión de PHP (7.4+)
-
-## Licencia
-
-Este proyecto es de uso interno para Grupo Expertos.
-
-## Soporte
-
-Para soporte técnico, contactar al equipo de desarrollo.
+**Backend**: Singleton, MVC, Repository  
+**Frontend**: Module Pattern, Observer, Template Method  
+**Base de Datos**: Triggers automáticos, Foreign Keys
