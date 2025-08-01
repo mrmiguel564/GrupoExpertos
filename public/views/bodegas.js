@@ -232,7 +232,7 @@ window.BodegasModule = {
 
             const $row = $(`
                 <tr>
-                    <td><code>${bodega.codigo || 'N/A'}</code></td>
+                    <td>${bodega.codigo || 'N/A'}</td>
                     <td><strong>${bodega.nombre}</strong></td>
                     <td>${bodega.ubicacion}</td>
                     <td>${parseInt(bodega.dotacion || 0)}</td>
