@@ -1,0 +1,157 @@
+<!-- Template: Detalles de Encargado -->
+<div class="modal-header bg-success text-white">
+    <h5 class="modal-title">
+        <i class="bi bi-person-circle me-2"></i> Detalles del Encargado
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <!-- Header con información principal -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card border-0 bg-light">
+                <div class="card-body py-2 px-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="mb-1" id="detail-nombre-completo">-</h5>
+                            <p class="text-muted mb-0 small">
+                                <i class="bi bi-envelope me-1"></i>
+                                <span id="detail-email">-</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                            <div class="mb-1 gap-1 justify-content-end d-flex align-items-center">
+                                <span class="text-muted pr-3 small">Cédula:</span>
+                                <span class="fs-6 fw-bold text-primary" id="detail-cedula">N/A</span>
+                            </div>
+                            <div>
+                                <span class="badge bg-success fs-6">
+                                    <i class="bi bi-person-check me-1"></i>Activo
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información detallada -->
+    <div class="row">
+        <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+                <div class="card-header bg-transparent py-2">
+                    <h6 class="mb-0 small">
+                        <i class="bi bi-info-circle me-2"></i>Información Personal
+                    </h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Teléfono:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <strong class="text-primary small">
+                                <i class="bi bi-telephone me-1"></i>
+                                <span id="detail-telefono">-</span>
+                            </strong>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Dirección:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small>
+                                <i class="bi bi-geo-alt me-1"></i>
+                                <span id="detail-direccion">-</span>
+                            </small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Email:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small>
+                                <i class="bi bi-envelope me-1"></i>
+                                <span id="detail-email-full">-</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-transparent py-2">
+                    <h6 class="mb-0 small">
+                        <i class="bi bi-calendar-event me-2"></i>Información del Sistema
+                    </h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Registrado:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small id="detail-created">-</small>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">Actualizado:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small id="detail-updated">-</small>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-sm-5">
+                            <small class="text-muted">ID Sistema:</small>
+                        </div>
+                        <div class="col-6 col-sm-7">
+                            <small>
+                                <i class="bi bi-hash me-1"></i>
+                                <span id="detail-id">-</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de bodegas asignadas -->
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-transparent py-2">
+                    <h6 class="mb-0 small">
+                        <i class="bi bi-building me-2"></i>Bodegas Asignadas
+                    </h6>
+                </div>
+                <div class="card-body py-2" style="max-height: 250px; overflow-y: auto;">
+                    <div id="detail-bodegas-container">
+                        <div id="detail-bodegas-list">
+                            <!-- Las bodegas se cargarán aquí dinámicamente -->
+                        </div>
+                        <div id="detail-bodegas-empty" class="text-center text-muted py-2" style="display: none;">
+                            <i class="bi bi-building-x fs-4 opacity-50"></i>
+                            <p class="mb-0 small">Sin bodegas asignadas</p>
+                            <small class="text-muted">Este encargado no está asignado a ninguna bodega</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer bg-light">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-circle me-1"></i> Cerrar
+    </button>
+    <button type="button" class="btn btn-success" id="edit-detail-btn">
+        <i class="bi bi-pencil me-1"></i> Editar Encargado
+    </button>
+</div>

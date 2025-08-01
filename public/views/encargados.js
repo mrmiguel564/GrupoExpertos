@@ -200,8 +200,17 @@ window.EncargadosModule = {
     showDetails: function(id) {
         console.log('Mostrando detalles de encargado:', id);
         
+        // Obtener template pre-cargado
+        const $template = $('#encargados-details-template');
+        if ($template.length === 0) {
+            console.error('Template de detalles no encontrado');
+            App.showNotification('Error: Template de detalles no encontrado', 'error');
+            return;
+        }
+        
         App.showLoading();
         
+        const self = this;
         $.ajax({
             url: '/api/encargados.php',
             method: 'GET',
@@ -211,7 +220,7 @@ window.EncargadosModule = {
             },
             success: function(response) {
                 if (response && response.data) {
-                    EncargadosModule.renderDetails(response.data);
+                    self.renderDetails(response.data, id, $template);
                 }
                 App.hideLoading();
             },
@@ -221,6 +230,143 @@ window.EncargadosModule = {
                 App.hideLoading();
             }
         });
+    },
+
+    // Renderizar detalles del encargado
+    renderDetails: function(encargado, id, $template) {
+        // Clonar template
+        const $detailsClone = $template.clone();
+        $detailsClone.removeClass('template d-none').removeAttr('id');
+        
+        // Renderizar modal con template clonado
+        App.renderModal($detailsClone.html());
+        
+        // Llenar datos en el template
+        $('#detail-nombre-completo').text(`${encargado.nombre || 'Sin nombre'} ${encargado.apellido || ''}`);
+        $('#detail-email').text(encargado.email || 'Sin email');
+        $('#detail-email-full').text(encargado.email || 'No especificado');
+        $('#detail-cedula').text(encargado.cedula || 'N/A');
+        $('#detail-telefono').text(encargado.telefono || 'No especificado');
+        $('#detail-direccion').text(encargado.direccion || 'No especificada');
+        $('#detail-id').text(encargado.id);
+        
+        // Fechas con formato mejorado
+        if (encargado.created_at) {
+            const fechaCreacion = new Date(encargado.created_at);
+            $('#detail-created').html(`
+                <i class="bi bi-calendar-plus me-1"></i>
+                ${fechaCreacion.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}
+                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaCreacion.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
+            `);
+        } else {
+            $('#detail-created').html('<span class="text-muted">No disponible</span>');
+        }
+        
+        if (encargado.updated_at) {
+            const fechaActualizacion = new Date(encargado.updated_at);
+            $('#detail-updated').html(`
+                <i class="bi bi-calendar-check me-1"></i>
+                ${fechaActualizacion.toLocaleDateString('es-ES', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                })}
+                <br><span class="text-muted" style="font-size: 0.75rem;">${fechaActualizacion.toLocaleTimeString('es-ES', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}</span>
+            `);
+        } else {
+            $('#detail-updated').html('<span class="text-muted">No disponible</span>');
+        }
+        
+        // Renderizar bodegas asignadas
+        this.renderBodegasAsignadas(encargado.bodegas || []);
+        
+        // Configurar evento para el botón editar
+        $('#edit-detail-btn').off('click').on('click', function() {
+            // Cerrar modal actual y abrir formulario
+            $('.modal').modal('hide');
+            setTimeout(() => {
+                EncargadosModule.showForm(encargado.id);
+            }, 300);
+        });
+    },
+
+    // Renderizar bodegas asignadas al encargado
+    renderBodegasAsignadas: function(bodegas) {
+        const $container = $('#detail-bodegas-container');
+        const $list = $('#detail-bodegas-list');
+        const $empty = $('#detail-bodegas-empty');
+
+        if (!bodegas || bodegas.length === 0) {
+            $list.hide();
+            $empty.show();
+            return;
+        }
+
+        $empty.hide();
+        $list.show();
+
+        let bodegasHtml = '';
+        bodegas.forEach(bodega => {
+            const estadoBadge = bodega.activa === true || bodega.activa === 'true' || bodega.activa === '1'
+                ? '<span class="badge bg-success">Activa</span>' 
+                : '<span class="badge bg-danger">Inactiva</span>';
+
+            bodegasHtml += `
+                <div class="bodega-item mb-2">
+                    <div class="d-flex align-items-center p-2 border rounded bg-white">
+                        <div class="flex-shrink-0 me-2">
+                            <div class="avatar-circle bg-primary text-white">
+                                <i class="bi bi-building"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark mb-1">
+                                <code class="me-2">${bodega.codigo || 'N/A'}</code>
+                                ${bodega.nombre || 'Sin nombre'}
+                            </div>
+                            <div class="small text-muted">
+                                <i class="bi bi-geo-alt me-1"></i>
+                                ${bodega.ubicacion || 'Sin ubicación'}
+                            </div>
+                            <div class="small text-muted">
+                                <i class="bi bi-people me-1"></i>
+                                ${parseInt(bodega.dotacion || 0)} persona${parseInt(bodega.dotacion || 0) !== 1 ? 's' : ''}
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 text-end">
+                            ${estadoBadge}
+                            <div class="mt-1">
+                                <button class="btn btn-sm btn-outline-primary" onclick="BodegasModule.showDetails(${bodega.id})" title="Ver detalles de la bodega">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Agregar contador de bodegas
+        const contador = `
+            <div class="mt-2 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-building me-1"></i>
+                    Total: ${bodegas.length} bodega${bodegas.length !== 1 ? 's' : ''} asignada${bodegas.length !== 1 ? 's' : ''}
+                </small>
+            </div>
+        `;
+
+        $list.html(bodegasHtml + contador);
     },
 
 

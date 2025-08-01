@@ -105,6 +105,11 @@ session_start();
         <?php include 'views/templates/bodegas-details.html'; ?>
     </div>
 
+    <!-- Template: Detalles de Encargados -->
+    <div id="encargados-details-template" class="template d-none">
+        <?php include 'views/templates/encargados-details.html'; ?>
+    </div>
+
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
