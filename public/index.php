@@ -20,8 +20,22 @@ session_start();
     
     <!-- SPA específico CSS -->
     <style>
+        /* Layout principal con flexbox */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Contenido principal que crece */
+        main {
+            flex: 1;
+            min-height: 70vh; /* Tamaño mínimo del contenido principal */
+            padding: 2rem 0;
+        }
+        
         .module-content {
-            min-height: 600px;
+            min-height: 500px; /* Altura mínima del contenido del módulo */
         }
         
         .loading-overlay {
@@ -40,6 +54,32 @@ session_start();
         .nav-link.active {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 0.375rem;
+        }
+        
+        /* Footer siempre abajo */
+        footer {
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+        
+        /* Contenedor responsivo */
+        .container-main {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        /* Ajustes responsivos */
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem 0;
+                min-height: 60vh;
+            }
+            
+            .module-content {
+                min-height: 400px;
+            }
         }
     </style>
 </head>
@@ -76,41 +116,38 @@ session_start();
     </nav>
 
     <!-- Main Content -->
-    <main class="container-flex m-4">
-        <!-- Alert Container -->
-        <div id="alert-container"></div>
-        
-        <!-- Module Content Container -->
-        <div id="module-content" class="module-content position-relative">
-            <!-- Loading overlay -->
-            <div id="loading-overlay" class="loading-overlay d-none">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                </div>
-            </div>
+    <main>
+        <div class="container-main">
+            <!-- Alert Container -->
+            <div id="alert-container"></div>
             
-            <!-- Contenido inicial -->
-            <div class="text-center py-5">
-                <i class="bi bi-building icon-large text-primary mb-3"></i>
-                <h2>Bienvenido al Sistema de Bodegas</h2>
-                <p class="text-muted">Selecciona un módulo del menú superior para comenzar</p>
+            <!-- Module Content Container -->
+            <div id="module-content" class="module-content position-relative">
+                <!-- Loading overlay -->
+                <div id="loading-overlay" class="loading-overlay d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+                
+                <!-- Contenido inicial -->
+                <div class="text-center py-5">
+                    <i class="bi bi-building display-1 text-primary mb-3"></i>
+                    <h2>Bienvenido al Sistema de Bodegas</h2>
+                    <p class="text-muted">Selecciona un módulo del menú superior para comenzar</p>
+                </div>
             </div>
         </div>
     </main>
 
-    <style>
-        main {
-            height: calc(100vh - 225px);
-            overflow-y: auto;
-        }
-    </style>
-
     <!-- Footer -->
-    <footer class="bg-light mt-5 py-4">
-        <div class="container text-center">
-            <p class="text-muted mb-0">
-                Sistema de Gestión de Bodegas &copy; <?= date('Y') ?> - Grupo Expertos
-            </p>
+    <footer class="bg-light py-2 border-top">
+        <div class="container-main">
+            <div class="text-center">
+                <p class="text-muted mb-0 small">
+                    Sistema de Gestión de Bodegas &copy; <?= date('Y') ?> - Grupo Expertos
+                </p>
+            </div>
         </div>
     </footer>
 
